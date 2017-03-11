@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ClientMobileBDD</string>
+    <string name="app_name">Password changer</string>
+    <string name="etUserName">Login</string>
+    <string name="etPassword">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="btnDeconnexion">Disconnect</string>
 </resources>

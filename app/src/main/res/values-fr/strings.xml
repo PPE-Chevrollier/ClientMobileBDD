@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ClientMobileBDD</string>
-    <string name="action_sign_in"></string>
+    <string name="app_name">Modifier un mot de passe</string>
+    <string name="action_sign_in">Connexion</string>
+    <string name="etUserName">Login</string>
+    <string name="etPassword">Mot de passe</string>
+    <string name="btnDeconnexion">Deconnexion</string>
 </resources>

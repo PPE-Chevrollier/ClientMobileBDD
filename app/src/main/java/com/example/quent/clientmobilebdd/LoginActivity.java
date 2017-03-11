@@ -36,25 +36,35 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            AlertDialog.Builder builder;
                             JSONObject jsonResponse = new JSONObject(response);
-                            Boolean success=jsonResponse.getString("result").equals("1");
+                            int result = jsonResponse.getInt("result");
 
-                            if (success) {
-                                String name = jsonResponse.getString("name");
-                                int age = jsonResponse.getInt("age");
-
-                                Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
-                                intent.putExtra("name", name);
-                                intent.putExtra("age", age);
-                                intent.putExtra("username", username);
-                                LoginActivity.this.startActivity(intent);
-                            } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                                builder.setMessage("Login Failed")
-                                        .setNegativeButton("Retry", null)
-                                        .create()
-                                        .show();
+                            switch (result){
+                                case 1:
+                                    String name = jsonResponse.getString("name");
+                                    Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
+                                    intent.putExtra("name", name);
+                                    LoginActivity.this.startActivity(intent);
+                                    break;
+                                case 0:
+                                    builder = new AlertDialog.Builder(LoginActivity.this);
+                                    builder.setMessage("Utilisateur introuvable ou mot de passe incorrect")
+                                            .setNegativeButton("Retry", null)
+                                            .create()
+                                            .show();
+                                    break;
+                                case 2:
+                                    builder = new AlertDialog.Builder(LoginActivity.this);
+                                    builder.setMessage("Vous devez disposez des droits d'administrateur")
+                                            .setNegativeButton("Retry", null)
+                                            .create()
+                                            .show();
+                                    break;
                             }
+
+                            etPassword.setText("");
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -62,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 };
 
-                LoginRequest loginRequest = new LoginRequest(username, password, responseListener);
+                BddRequest loginRequest = new BddRequest(responseListener, "connexion/"+username+"/"+password);
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                 queue.add(loginRequest);
             }
