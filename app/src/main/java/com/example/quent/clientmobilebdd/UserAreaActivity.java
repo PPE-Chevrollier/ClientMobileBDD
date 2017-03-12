@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.quent.clientmobilebdd.R.id.btnDeconnexion;
 import static com.example.quent.clientmobilebdd.R.id.listView_User;
@@ -43,6 +47,8 @@ public class UserAreaActivity extends AppCompatActivity {
             }
         });
 
+        final HashMap<String, String> users = new HashMap<String, String>();
+
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -50,11 +56,9 @@ public class UserAreaActivity extends AppCompatActivity {
                     AlertDialog.Builder builder;
                     JSONArray jsonResponse = new JSONArray(response);
 
-                    HashMap<Integer, String> users = new HashMap<Integer, String>();
-
                     for (int i = 0; i < jsonResponse.length(); i++) {
                         JSONObject jsonobject = jsonResponse.getJSONObject(i);
-                        users.put(jsonobject.getInt("id_personnes"), jsonobject.getString("nom_personnes")+ " "+ jsonobject.getString("prenom_personnes"));
+                        users.put(jsonobject.getString("login_etudiants"), jsonobject.getString("nom_personnes")+ " "+ jsonobject.getString("prenom_personnes"));
                     }
 
                     ListView ListViewUser = (ListView) findViewById(listView_User);
@@ -70,6 +74,43 @@ public class UserAreaActivity extends AppCompatActivity {
         BddRequest loginRequest = new BddRequest(responseListener, "getUsers");
         RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
         queue.add(loginRequest);
+
+        ((ListView) findViewById(listView_User)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            AlertDialog.Builder builder;
+                            JSONObject jsonResponse = new JSONObject(response);
+                            int result = jsonResponse.getInt("etat");
+                            if (result == 1){
+                                Toast.makeText(getApplicationContext(), "Le mot de passe à été réinitialisé", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                String nom = "";
+
+                for(Map.Entry<String, String> entry : users.entrySet()) {
+                    if (entry.getValue().equals(((TextView) view).getText())){
+                        nom = entry.getKey();
+                    }
+                }
+
+                BddRequest Request = new BddRequest(responseListener, "resetMdp/"+nom);
+                RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+                queue.add(Request);
+            }
+        });
     }
 
 

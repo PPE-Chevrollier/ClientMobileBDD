@@ -38,11 +38,11 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             AlertDialog.Builder builder;
                             JSONObject jsonResponse = new JSONObject(response);
-                            int result = jsonResponse.getInt("result");
+                            int result = jsonResponse.getInt("etat");
 
                             switch (result){
                                 case 1:
-                                    String name = jsonResponse.getString("name");
+                                    String name = jsonResponse.getString("prenom");
                                     Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
                                     intent.putExtra("name", name);
                                     LoginActivity.this.startActivity(intent);

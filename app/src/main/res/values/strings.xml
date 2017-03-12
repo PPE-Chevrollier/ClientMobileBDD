@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">Password changer</string>
+    <string name="app_name">ChevLoc</string>
     <string name="etUserName">Login</string>
     <string name="etPassword">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="btnDeconnexion">Disconnect</string>
+    <string name="tvTitre">Reset password</string>
 </resources>
