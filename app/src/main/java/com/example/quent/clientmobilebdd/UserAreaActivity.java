@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -58,7 +57,7 @@ public class UserAreaActivity extends AppCompatActivity {
 
                     for (int i = 0; i < jsonResponse.length(); i++) {
                         JSONObject jsonobject = jsonResponse.getJSONObject(i);
-                        users.put(jsonobject.getString("login_etudiants"), jsonobject.getString("nom_personnes")+ " "+ jsonobject.getString("prenom_personnes"));
+                        users.put(jsonobject.getString("login_etudiants"), jsonobject.getString("nom_etudiants")+ " "+ jsonobject.getString("prenom_etudiants"));
                     }
 
                     ListView ListViewUser = (ListView) findViewById(listView_User);
@@ -71,7 +70,7 @@ public class UserAreaActivity extends AppCompatActivity {
             }
         };
 
-        BddRequest loginRequest = new BddRequest(responseListener, "getUsers");
+        BddRequest loginRequest = new BddRequest(responseListener, "recupUtilisateurs");
         RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
         queue.add(loginRequest);
 
@@ -85,8 +84,7 @@ public class UserAreaActivity extends AppCompatActivity {
                         try {
                             AlertDialog.Builder builder;
                             JSONObject jsonResponse = new JSONObject(response);
-                            int result = jsonResponse.getInt("etat");
-                            if (result == 1){
+                            if (jsonResponse.getInt("etat") == 1){
                                 Toast.makeText(getApplicationContext(), "Le mot de passe à été réinitialisé", Toast.LENGTH_SHORT).show();
                             }
                             else{
@@ -106,7 +104,7 @@ public class UserAreaActivity extends AppCompatActivity {
                     }
                 }
 
-                BddRequest Request = new BddRequest(responseListener, "resetMdp/"+nom);
+                BddRequest Request = new BddRequest(responseListener, "changerMotDePasse/"+nom);
                 RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
                 queue.add(Request);
             }
